@@ -1,0 +1,22 @@
+<p-contextMenu #cm [model]="menuItems"></p-contextMenu>
+
+<div class="card">
+    <p-table [(contextMenuSelection)]="vehicleSelDetails" [contextMenu]="cm" dataKey="_id" [value]="arrayVehicles" [paginator]="true" [rows]="10">
+        <ng-template pTemplate="header">
+            <tr>
+                <th *ngFor="let col of cols" scope="">
+                    {{col.header}}
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-plate>
+            <tr [pContextMenuRow]="plate">
+                <td>{{plate._id}}</td>
+                <td>{{plate.plate}}</td>
+                <td>{{plate.codeRegion}}</td>
+                <td>{{plate.score}}</td>
+                <td>{{plate.type}}</td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>

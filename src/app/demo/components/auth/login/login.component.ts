@@ -60,16 +60,33 @@ export class LoginComponent implements OnInit {
         this._httpBase.postMethod('user/login', formLogin).subscribe({
             next: (response: ResponseWebApi) => {
                 if (response.status === true) {
+                    this._generateToken();
                     localStorage.setItem('user', JSON.stringify(response.data));
-                    localStorage.setItem('token', JSON.stringify(response.data.token));
-                    localStorage.setItem('isLoggedin', 'true')
-                    this._router.navigate(['dashboard']);
                 } else {
                     this._serviceMessage.add({ key: 'tst', severity: 'info', summary: 'Inicio sesión', detail: response.message });
                 }
             },
             error: (error) => {
                 this._serviceMessage.add({ key: 'tst', severity: 'error', summary: 'Inicio sesión', detail: error.message });
+            }
+        });
+    }
+
+    private _generateToken(): void {
+        const formLogin = this.formGroupLogin?.value;
+        formLogin.gethash = true;
+        this._httpBase.postMethod('user/login', formLogin).subscribe({
+            next: (response: ResponseWebApi) => {
+                if (response.status === true) {
+                    localStorage.setItem('token', JSON.stringify(response.data));
+                    localStorage.setItem('isLoggedin', 'true')
+                    this._router.navigate(['dashboard']);
+                } else {
+                    this._serviceMessage.add({ key: 'tst', severity: 'info', summary: 'Generando token', detail: response.message });
+                }
+            },
+            error: (error) => {
+                this._serviceMessage.add({ key: 'tst', severity: 'error', summary: 'Generando token', detail: error.message });
             }
         });
     }

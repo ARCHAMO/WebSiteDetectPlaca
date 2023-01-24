@@ -33,9 +33,8 @@ export class AppMenuComponent implements OnInit {
             {
                 label: 'Procesos',
                 items: [
-                    { label: 'Proyectos', icon: 'pi pi-fw pi-eye', routerLink: ['/procesos/proyectos'], badge: 'NEW' },
-                    { label: 'Modulos', icon: 'pi pi-fw pi-eye', routerLink: ['/procesos/modulos'], badge: 'NEW' },
-                    { label: 'Documentación', icon: 'pi pi-fw pi-eye', routerLink: ['/procesos/documentacion'], badge: 'NEW' },
+                    { label: 'Lecturas', icon: 'pi pi-fw pi-eye', routerLink: ['/procesos/lecturas'], badge: 'NEW' },
+                    { label: 'Vehiculos', icon: 'pi pi-fw pi-eye', routerLink: ['/procesos/vehiculos'], badge: 'NEW' },
                 ]
             },
         ];
