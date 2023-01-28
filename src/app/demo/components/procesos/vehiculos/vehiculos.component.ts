@@ -27,19 +27,25 @@ export class VehiculosComponent implements OnInit {
         private _router: Router
     ) { }
 
+    /**
+     * Metodo para inicializar las variables del componente
+     */
     ngOnInit(): void {
         this.cols = [
-            { header: 'Identificador' },
+            { header: 'Id' },
             { header: 'Placa' },
-            { header: 'Región' },
-            { header: 'Score' },
             { header: 'Tipo' },
+            { header: 'Identificación' },
+            { header: 'Nombre completo' },
+            { header: 'Ciudad' },
+            { header: 'Infracción' },
+            { header: 'Valor infracción' },
         ]
         this.menuItems = [
             {
                 label: 'Ver detalle',
                 icon: 'pi pi-fw pi-check',
-                command: () => this.details(this.vehicleSelDetails)
+                command: () => this.details(this.vehicleSelDetails._id)
             },
             {
                 label: 'Imprimir reporte',
@@ -50,7 +56,10 @@ export class VehiculosComponent implements OnInit {
         this.findAllVehicle();
     }
 
-    findAllVehicle() {
+    /**
+     * Metodo para realizar la busqueda de todos los registros de manera paginada, TODO: Aplicar filtros dinamicos, para buscar por criterios
+     */
+    findAllVehicle(): void {
         this._httpBase.getMethod('vehicles').subscribe({
             next: (response: ResponseWebApi) => {
                 if (response.status === true) {
@@ -65,15 +74,42 @@ export class VehiculosComponent implements OnInit {
         });
     }
 
-    details(vehicle: Vehicle) {
-        console.log(vehicle);
+    /**
+     * Metodo para realizar el redireccionamiento a la vista de detalle del vehiculo
+     * @param id Codigo unico del registro
+     */
+    details(id: string): void {
+        console.log(id);
     }
 
-    printReport(vehicle: Vehicle) {
+    /**
+     * Metodo para identificar el tipo de reporte a imprimir
+     * @param vehicle Objeto con la informacion del vehiculo que se le va a realizar el reporte.
+     */
+    printReport(vehicle: Vehicle): void {
+        switch (vehicle.typeInfraction) {
+            case 'SOAT':
+                this.reportSoat(vehicle);
+                break;
+            case 'TECNICOMECANICA':
+                this.reportTecnicoMecanica(vehicle);
+                break;
+            default:
+                break;
+        }
+    }
+
+    // TODO: El procesamiento de los reportes va en otra capa.
+
+    /**
+     * Metodo que realiza la construccion del reporte por vencimiento del SOAT
+     * @param vehicle Objeto con la informacion del vehiculo que se le va a realizar el reporte.
+     */
+    reportSoat(vehicle: Vehicle): void {
         const pdfDefinition: any = {
             content: [
                 {
-                    text: 'Hola mundo',
+                    text: 'Reporte para SOAT Vencido',
                 }
             ]
         }
@@ -82,4 +118,20 @@ export class VehiculosComponent implements OnInit {
         pdf.open();
     }
 
+    /**
+     * Metodo que realiza la construccion del reporte por vencimiento de la tecnicomecanica
+     * @param vehicle Objeto con la informacion del vehiculo que se le va a realizar el reporte.
+     */
+    reportTecnicoMecanica(vehicle: Vehicle): void {
+        const pdfDefinition: any = {
+            content: [
+                {
+                    text: 'Reporte para Tecnicomecanica vencida',
+                }
+            ]
+        }
+
+        const pdf = pdfMake.createPdf(pdfDefinition);
+        pdf.open();
+    }
 }

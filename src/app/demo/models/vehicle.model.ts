@@ -1,12 +1,23 @@
 export interface Vehicle {
     _id: string;
-    plate: String,
-    codeRegion: String,
-    score: Number,
-    type: String,
+    plate: string,
+    codeRegion: string,
+    score: number,
+    type: string,
+    fullName: string,
+    identification: string,
+    infraction: string,
+    addressInfraction: string,
+    addressCustomer: string,
+    typeInfraction: string,
+    evidenceDate: Date,
+    soatExpirationDate: Date,
+    city: string,
+    appearanceNumber: string,
+    valueOfTheFine: number
 
-    userCreationId: String,
-    userModificationId: String,
-    createdAt: Date,
-    updatedAt: Date
+    userCreationId?: string,
+    userModificationId?: string,
+    createdAt?: Date,
+    updatedAt?: Date
 }

@@ -24,6 +24,9 @@ export class LecturasComponent implements OnInit {
         private _router: Router
     ) { }
 
+    /**
+     *
+     */
     ngOnInit(): void {
         this.cols = [
             { header: 'Identificador' },
@@ -41,6 +44,9 @@ export class LecturasComponent implements OnInit {
         this.findAllPlate();
     }
 
+    /**
+     *
+     */
     findAllPlate() {
         this._httpBase.getMethod('plateRecognizers').subscribe({
             next: (response: ResponseWebApi) => {
@@ -56,7 +62,31 @@ export class LecturasComponent implements OnInit {
         });
     }
 
+    /**
+     *
+     * @param plate
+     */
     details(plate: PlateRecognizer) {
         console.log(plate);
+    }
+
+    /**
+     *
+     */
+    processImage() {
+        this._httpBase.postMethod('plateRecognizerExecSlope', {}).subscribe({
+            next: (response: ResponseWebApi) => {
+                console.log(response);
+
+                if (response.status === true) {
+
+                } else {
+                    this._serviceMessage.add({ key: 'tst', severity: 'info', summary: 'Buscar lecturas', detail: response.message });
+                }
+            },
+            error: (error) => {
+                this._serviceMessage.add({ key: 'tst', severity: 'error', summary: 'Buscar lecturas', detail: error.message });
+            }
+        });
     }
 }

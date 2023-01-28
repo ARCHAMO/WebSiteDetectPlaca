@@ -1,13 +1,14 @@
 export interface PlateRecognizer {
     _id: string;
-    processing_time: Number,
+    processing_time: number,
     results: any[],
-    filename: String,
-    version: Number,
+    filename: string,
+    version: number,
     camera_id: any,
+    fileNameClient: string,
 
-    userCreationId?: String,
-    userModificationId?: String,
+    userCreationId?: string,
+    userModificationId?: string,
     createdAt?: Date,
     updatedAt?: Date
 }
