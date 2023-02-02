@@ -1,4 +1,4 @@
-export interface PlateRecognizer {
+export interface IPlateRecognizer {
     _id: string;
     processing_time: number,
     results: any[],
@@ -6,6 +6,7 @@ export interface PlateRecognizer {
     version: number,
     camera_id: any,
     fileNameClient: string,
+    datePlateImage: Date,
 
     userCreationId?: string,
     userModificationId?: string,

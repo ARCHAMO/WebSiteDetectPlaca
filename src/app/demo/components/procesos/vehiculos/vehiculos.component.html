@@ -9,17 +9,17 @@
                 </th>
             </tr>
         </ng-template>
-        <ng-template pTemplate="body" let-plate>
-            <tr [pContextMenuRow]="plate">
-                <td>{{plate._id}}</td>
-                <td>{{plate.plate}}</td>
-                <td>{{plate.type}}</td>
-                <td>{{plate.identification}}</td>
-                <td>{{plate.fullName}}</td>
+        <ng-template pTemplate="body" let-vehicle>
+            <tr [pContextMenuRow]="vehicle">
+                <td>{{vehicle.plate | uppercase}}</td>
+                <td>{{vehicle.type}}</td>
+                <td>{{vehicle.datePlateImage | date:"dd-MM-yyyy, h:mm a"}}</td>
+                <td>{{vehicle.identification}}</td>
+                <td>{{vehicle.fullName}}</td>
 
-                <td>{{plate.city}}</td>
-                <td>{{plate.typeInfraction}}</td>
-                <td>{{plate.valueOfTheFine}}</td>
+                <td>{{vehicle.city}}</td>
+                <td>{{vehicle.typeInfraction}}</td>
+                <td>{{vehicle.valueOfTheFine | currency}}</td>
             </tr>
         </ng-template>
     </p-table>

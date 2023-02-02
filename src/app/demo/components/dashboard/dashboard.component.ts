@@ -1,97 +1,182 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { MenuItem } from 'primeng/api';
-import { Product } from '../../api/product';
-import { ProductService } from '../../service/product.service';
+import { MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
 import { LayoutService } from 'src/app/layout/service/app.layout.service';
+import { HttpBaseService } from '../../service/httpBase.service';
+import { ResponseWebApi } from '../../api/ResponseWebApi';
+import { IDashboard } from '../../models/dashboard.model';
+import { GeneralUtils } from '../../utils/general-utils';
+import { faker } from '@faker-js/faker';
 
 @Component({
     templateUrl: './dashboard.component.html',
 })
 export class DashboardComponent implements OnInit, OnDestroy {
 
-    items!: MenuItem[];
+    chartDataPlateForMonth: any;
+    chartDataInfractionForMonth: any;
 
-    products!: Product[];
-
-    chartData: any;
-
-    chartOptions: any;
+    chartOptionsPlateForMonth: any;
+    chartOptionsInfractionForMonth: any;
 
     subscription!: Subscription;
 
-    constructor(private productService: ProductService, public layoutService: LayoutService) {
-        this.subscription = this.layoutService.configUpdate$.subscribe(() => {
-            this.initChart();
-        });
+    public dataDashboard: IDashboard = {
+        effectivePlates: 0,
+        totalInfraction: 0,
+        totalReadings: 0,
+        effectivePlatesForMonth: [],
+        totalInfractionForMonth: [],
+        totalReadingsForMonth: []
+    };
+
+    constructor(
+        public layoutService: LayoutService,
+        private _httpBase: HttpBaseService,
+        private _serviceMessage: MessageService,
+    ) {
     }
 
     ngOnInit() {
-        this.initChart();
-        this.productService.getProductsSmall().then(data => this.products = data);
-
-        this.items = [
-            { label: 'Add New', icon: 'pi pi-fw pi-plus' },
-            { label: 'Remove', icon: 'pi pi-fw pi-minus' }
-        ];
+        this.getDataDashBoard();
     }
 
-    initChart() {
-        const documentStyle = getComputedStyle(document.documentElement);
-        const textColor = documentStyle.getPropertyValue('--text-color');
-        const textColorSecondary = documentStyle.getPropertyValue('--text-color-secondary');
-        const surfaceBorder = documentStyle.getPropertyValue('--surface-border');
-
-        this.chartData = {
-            labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-            datasets: [
-                {
-                    label: 'First Dataset',
-                    data: [65, 59, 80, 81, 56, 55, 40],
-                    fill: false,
-                    backgroundColor: documentStyle.getPropertyValue('--bluegray-700'),
-                    borderColor: documentStyle.getPropertyValue('--bluegray-700'),
-                    tension: .4
-                },
-                {
-                    label: 'Second Dataset',
-                    data: [28, 48, 40, 19, 86, 27, 90],
-                    fill: false,
-                    backgroundColor: documentStyle.getPropertyValue('--green-600'),
-                    borderColor: documentStyle.getPropertyValue('--green-600'),
-                    tension: .4
-                }
-            ]
-        };
-
-        this.chartOptions = {
-            plugins: {
-                legend: {
-                    labels: {
-                        color: textColor
-                    }
+    getDataDashBoard() {
+        this._httpBase.getMethod('dashboardGeneralData').subscribe({
+            next: (response: ResponseWebApi) => {
+                if (response.status === true) {
+                    this.dataDashboard = response.data;
+                    this.initCharPlateForMonth()
+                    this.initChatInfractionForMonth();
+                } else {
+                    this._serviceMessage.add({ key: 'tst', severity: 'info', summary: 'Buscar data', detail: response.message });
                 }
             },
-            scales: {
-                x: {
-                    ticks: {
-                        color: textColorSecondary
-                    },
-                    grid: {
-                        color: surfaceBorder,
-                        drawBorder: false
-                    }
-                },
-                y: {
-                    ticks: {
-                        color: textColorSecondary
-                    },
-                    grid: {
-                        color: surfaceBorder,
-                        drawBorder: false
-                    }
-                }
+            error: (error) => {
+                this._serviceMessage.add({ key: 'tst', severity: 'error', summary: 'Buscar data', detail: error.message });
             }
+        });
+    }
+
+    initCharPlateForMonth() {
+        // Armamos el array de labels
+        const data = GeneralUtils.cloneObject(this.dataDashboard.effectivePlatesForMonth)
+        let labelsSeries = [];
+        let labelsGraficaX = [];
+
+        // Recorremos para identificar las diferentes series (Tipos de infraccion) y los diferentes labels de la grafica (meses) que existen
+        data.forEach(element => {
+            const existLeyend = labelsSeries.includes(element._id.typeInfraction);
+            if (!existLeyend) {
+                labelsSeries.push(element._id.typeInfraction);
+            }
+
+            let labelX = Number.parseInt('' + element._id.anio + ('' + element._id.mes).padStart(2, '0'));
+            const existPuntoX = labelsGraficaX.includes(labelX);
+            if (!existPuntoX) {
+                labelsGraficaX.push(labelX);
+            }
+        });
+
+        labelsSeries = GeneralUtils.cloneObject(labelsSeries.sort());
+        labelsGraficaX = GeneralUtils.cloneObject(labelsGraficaX.sort());
+
+        console.log(labelsSeries);
+        console.log(labelsGraficaX);
+
+        // Recorremos cada serie para armar su proio dataset.
+        const dataSetArray = [];
+        labelsSeries.forEach(serie => {
+            const colorSerie = faker.color.rgb();
+            const arrayData = [];
+            labelsGraficaX.forEach(labelX => {
+                const dataSet = this.buscarTotal(serie, labelX, data);
+                arrayData.push(dataSet);
+            });
+
+            const dataSetSerie = {
+                label: serie,
+                data: arrayData,
+                fill: false,
+                backgroundColor: colorSerie,
+                borderColor: colorSerie,
+                tension: .4
+            };
+            dataSetArray.push(dataSetSerie);
+        });
+
+        this.chartDataPlateForMonth = {
+            labels: labelsGraficaX,
+            datasets: dataSetArray
+        };
+    }
+
+    /**
+     *
+     * @param element
+     * @param data
+     */
+    buscarTotal(serie: string, labelXIn: number, data) {
+        let total = 0;
+        data.forEach(element => {
+            let label = Number.parseInt('' + element._id.anio + ('' + element._id.mes).padStart(2, '0'));
+            if (element._id.typeInfraction === serie && label === labelXIn && total === 0) {
+                total = element.total;
+            }
+        });
+        return total;
+    }
+
+    initChatInfractionForMonth() {
+        // Armamos el array de labels
+        const data = GeneralUtils.cloneObject(this.dataDashboard.totalInfractionForMonth)
+        let labelsSeries = [];
+        let labelsGraficaX = [];
+
+        // Recorremos para identificar las diferentes series (Tipos de infraccion) y los diferentes labels de la grafica (meses) que existen
+        data.forEach(element => {
+            const existLeyend = labelsSeries.includes(element._id.typeInfraction);
+            if (!existLeyend) {
+                labelsSeries.push(element._id.typeInfraction);
+            }
+
+            let labelX = Number.parseInt('' + element._id.anio + ('' + element._id.mes).padStart(2, '0'));
+            const existPuntoX = labelsGraficaX.includes(labelX);
+            if (!existPuntoX) {
+                labelsGraficaX.push(labelX);
+            }
+        });
+
+        labelsSeries = GeneralUtils.cloneObject(labelsSeries.sort());
+        labelsGraficaX = GeneralUtils.cloneObject(labelsGraficaX.sort());
+
+        console.log(labelsSeries);
+        console.log(labelsGraficaX);
+
+        // Recorremos cada serie para armar su proio dataset.
+        const dataSetArray = [];
+        labelsSeries.forEach(serie => {
+            const colorSerie = faker.color.rgb();
+            const arrayData = [];
+            labelsGraficaX.forEach(labelX => {
+                const dataSet = this.buscarTotal(serie, labelX, data);
+                arrayData.push(dataSet);
+            });
+
+            const dataSetSerie = {
+                label: serie,
+                data: arrayData,
+                fill: false,
+                backgroundColor: colorSerie,
+                borderColor: colorSerie,
+                tension: .4
+            };
+            dataSetArray.push(dataSetSerie);
+        });
+
+        this.chartDataInfractionForMonth = {
+            labels: labelsGraficaX,
+            datasets: dataSetArray
         };
     }
 

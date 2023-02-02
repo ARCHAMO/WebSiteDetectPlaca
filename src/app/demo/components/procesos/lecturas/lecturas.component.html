@@ -20,6 +20,7 @@
                     <td>{{plate._id}}</td>
                     <td>{{plate.processing_time}}</td>
                     <td>{{plate.fileNameClient}}</td>
+                    <td>{{plate.datePlateImage | date:"dd-MM-yyyy, h:mm a"}}</td>
                     <td>{{plate.createdAt | date:"dd-MM-yyyy, h:mm a"}}</td>
                 </tr>
             </ng-template>

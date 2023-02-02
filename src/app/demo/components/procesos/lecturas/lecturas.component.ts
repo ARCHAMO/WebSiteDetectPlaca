@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { MenuItem, MessageService } from 'primeng/api';
 import { ResponseWebApi } from 'src/app/demo/api/ResponseWebApi';
-import { PlateRecognizer } from 'src/app/demo/models/plateRecognizer.model';
+import { IPlateRecognizer } from 'src/app/demo/models/plateRecognizer.model';
 import { HttpBaseService } from 'src/app/demo/service/httpBase.service';
 import { GeneralUtils } from 'src/app/demo/utils/general-utils';
 
@@ -13,9 +13,9 @@ import { GeneralUtils } from 'src/app/demo/utils/general-utils';
 })
 export class LecturasComponent implements OnInit {
 
-    public arrayLecturas: PlateRecognizer[] = [];
+    public arrayLecturas: IPlateRecognizer[] = [];
     public cols: any[] = [];
-    public plateSelDetails!: PlateRecognizer;
+    public plateSelDetails!: IPlateRecognizer;
     public menuItems: MenuItem[] = [];
 
     constructor(
@@ -32,12 +32,13 @@ export class LecturasComponent implements OnInit {
             { header: 'Identificador' },
             { header: 'Tiempo' },
             { header: 'Nombre archivo' },
+            { header: 'Fecha lectura' },
             { header: 'Fecha creación' },
         ]
         this.menuItems = [
             {
                 label: 'Ver detalle',
-                icon: 'pi pi-fw pi-check',
+                icon: 'pi pi-fw pi-camera',
                 command: () => this.details(this.plateSelDetails)
             },
         ];
@@ -66,7 +67,7 @@ export class LecturasComponent implements OnInit {
      *
      * @param plate
      */
-    details(plate: PlateRecognizer) {
+    details(plate: IPlateRecognizer) {
         console.log(plate);
     }
 

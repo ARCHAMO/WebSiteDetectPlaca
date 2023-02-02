@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { MenuItem, MessageService } from 'primeng/api';
 import { ResponseWebApi } from 'src/app/demo/api/ResponseWebApi';
-import { Vehicle } from 'src/app/demo/models/vehicle.model';
+import { IVehicle } from 'src/app/demo/models/vehicle.model';
 import { HttpBaseService } from 'src/app/demo/service/httpBase.service';
 import { GeneralUtils } from 'src/app/demo/utils/general-utils';
 import pdfMake from 'pdfmake/build/pdfmake';
@@ -16,9 +16,9 @@ pdfMake.vfs = pdfFonts.pdfMake.vfs;
 })
 export class VehiculosComponent implements OnInit {
 
-    public arrayVehicles: Vehicle[] = [];
+    public arrayVehicles: IVehicle[] = [];
     public cols: any[] = [];
-    public vehicleSelDetails!: Vehicle;
+    public vehicleSelDetails!: IVehicle;
     public menuItems: MenuItem[] = [];
 
     constructor(
@@ -32,9 +32,9 @@ export class VehiculosComponent implements OnInit {
      */
     ngOnInit(): void {
         this.cols = [
-            { header: 'Id' },
             { header: 'Placa' },
             { header: 'Tipo' },
+            { header: 'Fecha lectura' },
             { header: 'Identificación' },
             { header: 'Nombre completo' },
             { header: 'Ciudad' },
@@ -44,12 +44,12 @@ export class VehiculosComponent implements OnInit {
         this.menuItems = [
             {
                 label: 'Ver detalle',
-                icon: 'pi pi-fw pi-check',
+                icon: 'pi pi-fw pi-car',
                 command: () => this.details(this.vehicleSelDetails._id)
             },
             {
                 label: 'Imprimir reporte',
-                icon: 'pi pi-fw pi-check',
+                icon: 'pi pi-fw pi-file-pdf',
                 command: () => this.printReport(this.vehicleSelDetails)
             },
         ];
@@ -86,7 +86,7 @@ export class VehiculosComponent implements OnInit {
      * Metodo para identificar el tipo de reporte a imprimir
      * @param vehicle Objeto con la informacion del vehiculo que se le va a realizar el reporte.
      */
-    printReport(vehicle: Vehicle): void {
+    printReport(vehicle: IVehicle): void {
         switch (vehicle.typeInfraction) {
             case 'SOAT':
                 this.reportSoat(vehicle);
@@ -105,7 +105,7 @@ export class VehiculosComponent implements OnInit {
      * Metodo que realiza la construccion del reporte por vencimiento del SOAT
      * @param vehicle Objeto con la informacion del vehiculo que se le va a realizar el reporte.
      */
-    reportSoat(vehicle: Vehicle): void {
+    reportSoat(vehicle: IVehicle): void {
         const pdfDefinition: any = {
             content: [
                 {
@@ -122,7 +122,7 @@ export class VehiculosComponent implements OnInit {
      * Metodo que realiza la construccion del reporte por vencimiento de la tecnicomecanica
      * @param vehicle Objeto con la informacion del vehiculo que se le va a realizar el reporte.
      */
-    reportTecnicoMecanica(vehicle: Vehicle): void {
+    reportTecnicoMecanica(vehicle: IVehicle): void {
         const pdfDefinition: any = {
             content: [
                 {

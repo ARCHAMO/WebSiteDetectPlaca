@@ -1,4 +1,4 @@
-export interface Vehicle {
+export interface IVehicle {
     _id: string;
     plate: string,
     codeRegion: string,
@@ -15,6 +15,8 @@ export interface Vehicle {
     city: string,
     appearanceNumber: string,
     valueOfTheFine: number
+    datePlateImage: Date,
+    plateRecognizerId: string,
 
     userCreationId?: string,
     userModificationId?: string,
