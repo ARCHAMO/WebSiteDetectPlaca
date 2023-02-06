@@ -1,29 +1,41 @@
 <p-contextMenu #cm [model]="menuItems"></p-contextMenu>
-
-<div class="card">
-    <div class="row">
-        <div class="col-md-12">
-            <button pButton pRipple label="Procesar imagenes pendientes" (click)="processImage()"></button>
+<p-dialog header="Detalle del registro de lectura de imagen" [(visible)]="display" [breakpoints]="{'960px': '75vw', '640px': '100vw'}" [style]="{width: '30vw'}">
+    <div class="grid">
+        <div class="col-12">
+            <ngx-json-viewer [json]="plateSelDetails.results"></ngx-json-viewer>
         </div>
     </div>
-    <div class="row">
-        <p-table [(contextMenuSelection)]="plateSelDetails" [contextMenu]="cm" dataKey="_id" [value]="arrayLecturas" [paginator]="true" [rows]="10">
-            <ng-template pTemplate="header">
-                <tr>
-                    <th *ngFor="let col of cols" scope="">
-                        {{col.header}}
-                    </th>
-                </tr>
-            </ng-template>
-            <ng-template pTemplate="body" let-plate>
-                <tr [pContextMenuRow]="plate">
-                    <td>{{plate._id}}</td>
-                    <td>{{plate.processing_time}}</td>
-                    <td>{{plate.fileNameClient}}</td>
-                    <td>{{plate.datePlateImage | date:"dd-MM-yyyy, h:mm a"}}</td>
-                    <td>{{plate.createdAt | date:"dd-MM-yyyy, h:mm a"}}</td>
-                </tr>
-            </ng-template>
-        </p-table>
+    <ng-template pTemplate="footer">
+        <button pButton icon="pi pi-check" (click)="display=false" label="Cerrar" class="p-button-outlined"></button>
+    </ng-template>
+</p-dialog>
+
+<div class="grid">
+    <div class="col-12">
+        <div class="card">
+            <div class="col-12">
+                <button pButton pRipple label="Procesar imagenes pendientes" (click)="processImage()"></button>
+            </div>
+            <div class="col-12">
+                <p-table [(contextMenuSelection)]="plateSelDetails" [contextMenu]="cm" dataKey="_id" [value]="arrayLecturas" [paginator]="true" [rows]="10">
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th *ngFor="let col of cols" scope="">
+                                {{col.header}}
+                            </th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-plate>
+                        <tr [pContextMenuRow]="plate">
+                            <td>{{plate._id}}</td>
+                            <td>{{plate.processing_time}}</td>
+                            <td>{{plate.fileNameClient}}</td>
+                            <td>{{plate.datePlateImage | date:"dd-MM-yyyy, h:mm a"}}</td>
+                            <td>{{plate.createdAt | date:"dd-MM-yyyy, h:mm a"}}</td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </div>
+        </div>
     </div>
 </div>

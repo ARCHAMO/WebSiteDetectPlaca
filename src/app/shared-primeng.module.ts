@@ -6,6 +6,8 @@ import { InputTextModule } from 'primeng/inputtext';
 import { MenuModule } from 'primeng/menu';
 import { SplitButtonModule } from 'primeng/splitbutton';
 import { ContextMenuModule } from 'primeng/contextmenu';
+import { DialogModule } from 'primeng/dialog';
+import { AccordionModule } from 'primeng/accordion';
 
 @NgModule({
     declarations: [],
@@ -16,7 +18,9 @@ import { ContextMenuModule } from 'primeng/contextmenu';
         InputTextModule,
         MenuModule,
         SplitButtonModule,
-        ContextMenuModule
+        ContextMenuModule,
+        DialogModule,
+        AccordionModule
     ],
     exports: [
         TableModule,
@@ -24,7 +28,9 @@ import { ContextMenuModule } from 'primeng/contextmenu';
         InputTextModule,
         MenuModule,
         SplitButtonModule,
-        ContextMenuModule
+        ContextMenuModule,
+        DialogModule,
+        AccordionModule
     ]
 })
 export class SharedPrimengModule { }

@@ -15,8 +15,9 @@ export class LecturasComponent implements OnInit {
 
     public arrayLecturas: IPlateRecognizer[] = [];
     public cols: any[] = [];
-    public plateSelDetails!: IPlateRecognizer;
+    public plateSelDetails = {} as IPlateRecognizer;
     public menuItems: MenuItem[] = [];
+    public display: boolean = false;
 
     constructor(
         private _httpBase: HttpBaseService,
@@ -68,7 +69,8 @@ export class LecturasComponent implements OnInit {
      * @param plate
      */
     details(plate: IPlateRecognizer) {
-        console.log(plate);
+        this.plateSelDetails = GeneralUtils.cloneObject(plate);
+        this.display = true;
     }
 
     /**
@@ -77,8 +79,6 @@ export class LecturasComponent implements OnInit {
     processImage() {
         this._httpBase.postMethod('plateRecognizerExecSlope', {}).subscribe({
             next: (response: ResponseWebApi) => {
-                console.log(response);
-
                 if (response.status === true) {
 
                 } else {

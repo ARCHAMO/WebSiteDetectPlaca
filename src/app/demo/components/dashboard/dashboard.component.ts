@@ -38,6 +38,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
+        // throw 'Error';
         this.getDataDashBoard();
     }
 
@@ -150,10 +151,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         labelsSeries = GeneralUtils.cloneObject(labelsSeries.sort());
         labelsGraficaX = GeneralUtils.cloneObject(labelsGraficaX.sort());
 
-        console.log(labelsSeries);
-        console.log(labelsGraficaX);
-
-        // Recorremos cada serie para armar su proio dataset.
+        // Recorremos cada serie para armar su propio dataset.
         const dataSetArray = [];
         labelsSeries.forEach(serie => {
             const colorSerie = faker.color.rgb();

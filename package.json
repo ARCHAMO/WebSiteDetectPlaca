@@ -25,6 +25,8 @@
     "@faker-js/faker": "^7.6.0",
     "chart.js": "^3.3.2",
     "lodash": "^4.17.21",
+    "moment": "^2.29.4",
+    "ngx-json-viewer": "^3.2.1",
     "ngx-spinner": "^14.0.0",
     "pdfmake": "^0.2.7",
     "primeflex": "^3.2.0",

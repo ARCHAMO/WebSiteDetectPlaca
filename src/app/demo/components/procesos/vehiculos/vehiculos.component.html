@@ -1,26 +1,107 @@
 <p-contextMenu #cm [model]="menuItems"></p-contextMenu>
+<p-dialog header="Detalle de la lectura efectiva realizada" showEffect="fade" [modal]="true" [(visible)]="display" [breakpoints]="{'960px': '75vw', '640px': '100vw'}" [style]="{width: '50vw'}">
+    <div class="grid">
+        <div class="col-12">
+            <form [formGroup]="formGroupVehicle">
+                <p-accordion>
+                    <p-accordionTab header="Información personal" [selected]="true" class="line-height-3 m-0">
+                        <div class="p-fluid p-formgrid grid">
+                            <div class="field col-12 md:col-3">
+                                <label htmlFor="identification">Identificación</label>
+                                <input pInputText id="identification" type="text" formControlName="identification" />
+                            </div>
+                            <div class="field col-12 md:col-3">
+                                <label htmlFor="fullName">Nombre completo</label>
+                                <input pInputText id="fullName" type="text" formControlName="fullName" />
+                            </div>
+                            <div class="field col-12 md:col-3">
+                                <label htmlFor="addressCustomer">Dirección</label>
+                                <input pInputText id="addressCustomer" type="text" formControlName="addressCustomer" />
+                            </div>
+                        </div>
+                    </p-accordionTab>
+                    <p-accordionTab header="Informacion del vehículo" class="line-height-3 m-0">
+                        <div class="p-fluid p-formgrid grid">
+                            <div class="field col-12 md:col-3">
+                                <label htmlFor="plate">Placa</label>
+                                <input pInputText id="plate" type="text" formControlName="plate" />
+                            </div>
+                            <div class="field col-12 md:col-3">
+                                <label htmlFor="type">Tipo de vehiculo</label>
+                                <input pInputText id="type" type="text" formControlName="type" />
+                            </div>
+                            <div class="field col-12 md:col-3">
+                                <label htmlFor="city">Ciudad</label>
+                                <input pInputText id="city" type="text" formControlName="city" />
+                            </div>
+                            <div class="field col-12 md:col-3">
+                                <label htmlFor="soatExpirationDate">Fecha ven. SOAT</label>
+                                <input pInputText id="soatExpirationDate" type="text" formControlName="soatExpirationDate" />
+                            </div>
+                        </div>
+                    </p-accordionTab>
+                    <p-accordionTab header="Información de la infracción" class="line-height-3 m-0">
+                        <div class="p-fluid p-formgrid grid">
+                            <div class="field col-12 md:col-3">
+                                <label htmlFor="appearanceNumber">Número de infracción</label>
+                                <input pInputText id="appearanceNumber" type="text" formControlName="appearanceNumber" />
+                            </div>
+                            <div class="field col-12 md:col-3">
+                                <label htmlFor="infraction">Código infracción</label>
+                                <input pInputText id="infraction" type="text" formControlName="infraction" />
+                            </div>
+                            <div class="field col-12 md:col-3">
+                                <label htmlFor="addressInfraction">Dirección de la infracción</label>
+                                <input pInputText id="addressInfraction" type="text" formControlName="addressInfraction" />
+                            </div>
+                            <div class="field col-12 md:col-3">
+                                <label htmlFor="evidenceDate">Fecha de la evidencia</label>
+                                <input pInputText id="evidenceDate" type="text" formControlName="evidenceDate" />
+                            </div>
+                            <div class="field col-12 md:col-3">
+                                <label htmlFor="datePlateImage">Fecha de captura de imagen</label>
+                                <input pInputText id="datePlateImage" type="text" formControlName="datePlateImage" />
+                            </div>
+                            <div class="field col-12 md:col-3">
+                                <label htmlFor="valueOfTheFine">Valor de la infracción</label>
+                                <input pInputText id="valueOfTheFine" type="text" formControlName="valueOfTheFine" />
+                            </div>
+                        </div>
+                    </p-accordionTab>
+                </p-accordion>
+            </form>
+        </div>
+    </div>
+    <ng-template pTemplate="footer">
+        <button pButton icon="pi pi-check" (click)="display=false" label="Cerrar" class="p-button-outlined"></button>
+    </ng-template>
+</p-dialog>
 
-<div class="card">
-    <p-table [(contextMenuSelection)]="vehicleSelDetails" [contextMenu]="cm" dataKey="_id" [value]="arrayVehicles" [paginator]="true" [rows]="10">
-        <ng-template pTemplate="header">
-            <tr>
-                <th *ngFor="let col of cols" scope="">
-                    {{col.header}}
-                </th>
-            </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-vehicle>
-            <tr [pContextMenuRow]="vehicle">
-                <td>{{vehicle.plate | uppercase}}</td>
-                <td>{{vehicle.type}}</td>
-                <td>{{vehicle.datePlateImage | date:"dd-MM-yyyy, h:mm a"}}</td>
-                <td>{{vehicle.identification}}</td>
-                <td>{{vehicle.fullName}}</td>
+<div class="grid">
+    <div class="col-12">
+        <div class="card">
+            <p-table [(contextMenuSelection)]="vehicleSelDetails" [contextMenu]="cm" dataKey="_id" [value]="arrayVehicles" [paginator]="true" [rows]="10">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th *ngFor="let col of cols" scope="">
+                            {{col.header}}
+                        </th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-vehicle>
+                    <tr [pContextMenuRow]="vehicle">
+                        <td>{{vehicle.plate | uppercase}}</td>
+                        <td>{{vehicle.type}}</td>
+                        <td>{{vehicle.datePlateImage | date:"dd-MM-yyyy, h:mm a"}}</td>
+                        <td>{{vehicle.identification}}</td>
+                        <td>{{vehicle.fullName}}</td>
 
-                <td>{{vehicle.city}}</td>
-                <td>{{vehicle.typeInfraction}}</td>
-                <td>{{vehicle.valueOfTheFine | currency}}</td>
-            </tr>
-        </ng-template>
-    </p-table>
+                        <td>{{vehicle.city}}</td>
+                        <td>{{vehicle.typeInfraction}}</td>
+                        <td>{{vehicle.valueOfTheFine | currency}}</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
 </div>
